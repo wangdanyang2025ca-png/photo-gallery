@@ -91,22 +91,7 @@
     <div class="lb-thumbnails" id="lbThumbs"></div>
   </div>
 
-  <!-- Install Banner -->
-  <div class="install-banner" id="installBanner" hidden>
-    <div class="install-content">
-      <span class="install-icon">📱</span>
-      <div>
-        <p class="install-title">安装到主屏幕</p>
-        <p class="install-sub">像原生 App 一样使用</p>
-      </div>
-    </div>
-    <div class="install-actions">
-      <button class="install-btn" id="installBtn" onclick="handleInstallClick()">安装</button>
-      <button class="install-dismiss" id="installDismiss" onclick="this.closest('#installBanner').classList.add('closed');sessionStorage.setItem('banner_closed','1')">✕</button>
-    </div>
-  </div>
-
-  <!-- Toast -->
+<!-- Toast -->
   <div class="toast" id="toast"></div>
 
   <script src="app.js"></script>
