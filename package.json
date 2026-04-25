@@ -4,6 +4,7 @@
   "description": "优雅的照片展示画廊 + PWA 手机 App",
   "private": true,
   "scripts": {
+    "build": "echo 'Static site, no build needed'",
     "start": "python3 -m http.server 8080"
   },
   "dependencies": {}
