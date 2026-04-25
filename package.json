@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "postinstall": "node postinstall.js",
-    "build": "echo 'Static site, no build needed'",
+    "build": "mkdir -p public && cp index.html style.css app.js manifest.json sw.js server.js public/ && cp -r icons public/",
     "start": "node server.js"
   },
   "dependencies": {}
