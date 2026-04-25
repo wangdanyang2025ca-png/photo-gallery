@@ -259,6 +259,16 @@ function showToast(msg) {
 }
 
 // ── PWA Install ──────────────────────────────────────────────────────────────
+function isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent); }
+function isInStandaloneMode() {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+}
+
+// Show banner: iOS always (needs manual steps), others on beforeinstallprompt
+if (isIOS() && !isInStandaloneMode()) {
+  installBanner.hidden = false;
+}
+
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredPrompt = e;
@@ -266,12 +276,22 @@ window.addEventListener('beforeinstallprompt', e => {
 });
 
 document.getElementById('installBtn').addEventListener('click', async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') showToast('App 已安装到主屏幕！');
-  deferredPrompt = null;
-  installBanner.hidden = true;
+  if (isIOS()) {
+    showInstallGuide();
+    return;
+  }
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      showToast('App 已安装！');
+      installBanner.hidden = true;
+    }
+    deferredPrompt = null;
+  } else {
+    // Chrome: prompt already used or dismissed — show manual guide
+    showInstallGuide();
+  }
 });
 
 document.getElementById('installDismiss').addEventListener('click', () => {
@@ -280,8 +300,43 @@ document.getElementById('installDismiss').addEventListener('click', () => {
 
 window.addEventListener('appinstalled', () => {
   installBanner.hidden = true;
+  document.getElementById('installGuide')?.remove();
   showToast('欢迎使用 Gallery App！');
 });
+
+function showInstallGuide() {
+  const existing = document.getElementById('installGuide');
+  if (existing) { existing.remove(); return; }
+
+  const ios = isIOS();
+  const guide = document.createElement('div');
+  guide.id = 'installGuide';
+  guide.innerHTML = `
+    <div class="guide-backdrop"></div>
+    <div class="guide-box">
+      <button class="guide-close" onclick="document.getElementById('installGuide').remove()">✕</button>
+      <h3 class="guide-title">安装到主屏幕</h3>
+      ${ios ? `
+        <p class="guide-note">请使用 <strong>Safari</strong> 浏览器打开本网站，然后：</p>
+        <ol class="guide-steps">
+          <li>点击底部工具栏的 <strong>分享</strong> 按钮 <span class="guide-icon">□↑</span></li>
+          <li>向下滑动，选择 <strong>"添加到主屏幕"</strong></li>
+          <li>点击右上角 <strong>"添加"</strong> 完成安装</li>
+        </ol>
+      ` : `
+        <p class="guide-note">在 Chrome 浏览器中：</p>
+        <ol class="guide-steps">
+          <li>点击地址栏右侧的 <strong>安装图标</strong> <span class="guide-icon">⊕</span></li>
+          <li>或点击右上角菜单 <strong>⋮</strong> → <strong>"安装 Photo Gallery"</strong></li>
+          <li>在弹出窗口中点击 <strong>"安装"</strong></li>
+        </ol>
+      `}
+      <p class="guide-tip">安装后可从主屏幕直接启动，体验媲美原生 App</p>
+    </div>
+  `;
+  document.body.appendChild(guide);
+  guide.querySelector('.guide-backdrop').addEventListener('click', () => guide.remove());
+}
 
 // ── Service Worker ───────────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
