@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f0f0f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Photo Gallery" />
+  <meta name="description" content="优雅的照片展示画廊" />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+
+  <title>Photo Gallery</title>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">◈</span>
+        <span class="logo-text">Gallery</span>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn active" data-filter="all">全部</button>
+        <button class="nav-btn" data-filter="nature">自然</button>
+        <button class="nav-btn" data-filter="city">城市</button>
+        <button class="nav-btn" data-filter="people">人像</button>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-btn" id="viewToggle" title="切换视图">
+          <span id="viewIcon">⊞</span>
+        </button>
+        <button class="icon-btn" id="uploadBtn" title="上传照片">＋</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">捕捉每一个<br><span class="highlight">美好瞬间</span></h1>
+      <p class="hero-sub">浏览、分享你的精彩照片</p>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num" id="totalCount">0</span><span class="stat-label">张照片</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">个分类</span></div>
+    </div>
+  </section>
+
+  <!-- Upload Area -->
+  <div class="upload-area" id="uploadArea">
+    <input type="file" id="fileInput" accept="image/*" multiple hidden />
+    <div class="upload-zone" id="dropZone">
+      <div class="upload-icon">↑</div>
+      <p class="upload-text">拖拽照片到这里，或点击选择</p>
+      <p class="upload-hint">支持 JPG、PNG、WebP、GIF</p>
+      <button class="upload-btn" onclick="document.getElementById('fileInput').click()">选择照片</button>
+    </div>
+  </div>
+
+  <!-- Gallery -->
+  <main class="gallery-section">
+    <div class="section-header">
+      <h2 class="section-title">照片库</h2>
+      <span class="section-count" id="showingCount"></span>
+    </div>
+    <div class="gallery grid-view" id="gallery"></div>
+    <div class="empty-state" id="emptyState" hidden>
+      <div class="empty-icon">🌄</div>
+      <p>还没有照片，点击右上角 ＋ 上传吧</p>
+    </div>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lb-close" id="lbClose">✕</button>
+    <button class="lb-nav lb-prev" id="lbPrev">‹</button>
+    <button class="lb-nav lb-next" id="lbNext">›</button>
+    <div class="lb-content">
+      <img class="lb-img" id="lbImg" src="" alt="" />
+      <div class="lb-info">
+        <h3 class="lb-title" id="lbTitle"></h3>
+        <p class="lb-meta" id="lbMeta"></p>
+      </div>
+    </div>
+    <div class="lb-thumbnails" id="lbThumbs"></div>
+  </div>
+
+  <!-- Install Banner -->
+  <div class="install-banner" id="installBanner" hidden>
+    <div class="install-content">
+      <span class="install-icon">📱</span>
+      <div>
+        <p class="install-title">安装到主屏幕</p>
+        <p class="install-sub">像原生 App 一样使用</p>
+      </div>
+    </div>
+    <div class="install-actions">
+      <button class="install-btn" id="installBtn">安装</button>
+      <button class="install-dismiss" id="installDismiss">✕</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
