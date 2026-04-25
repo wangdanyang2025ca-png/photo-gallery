@@ -261,10 +261,9 @@ function showToast(msg) {
 // ── PWA Install ──────────────────────────────────────────────────────────────
 function isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent); }
 function isInStandaloneMode() {
-  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  return window.matchMedia('(display-mode: standalone)').matches || !!window.navigator.standalone;
 }
 
-// Show banner: iOS always (needs manual steps), others on beforeinstallprompt
 if (isIOS() && !isInStandaloneMode()) {
   installBanner.hidden = false;
 }
@@ -275,34 +274,24 @@ window.addEventListener('beforeinstallprompt', e => {
   installBanner.hidden = false;
 });
 
-document.getElementById('installBtn').addEventListener('click', async () => {
-  if (isIOS()) {
-    showInstallGuide();
-    return;
-  }
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      showToast('App 已安装！');
-      installBanner.hidden = true;
-    }
-    deferredPrompt = null;
-  } else {
-    // Chrome: prompt already used or dismissed — show manual guide
-    showInstallGuide();
-  }
-});
-
-document.getElementById('installDismiss').addEventListener('click', () => {
-  installBanner.hidden = true;
-});
-
 window.addEventListener('appinstalled', () => {
   installBanner.hidden = true;
   document.getElementById('installGuide')?.remove();
   showToast('欢迎使用 Gallery App！');
 });
+
+// Global — called by inline onclick in HTML
+window.handleInstallClick = async function () {
+  if (isIOS()) { showInstallGuide(); return; }
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') { showToast('App 已安装！'); installBanner.hidden = true; }
+    deferredPrompt = null;
+  } else {
+    showInstallGuide();
+  }
+};
 
 function showInstallGuide() {
   const existing = document.getElementById('installGuide');
