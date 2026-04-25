@@ -433,9 +433,11 @@ body {
 }
 
 @keyframes slideUp {
-  from { transform: translateX(-50%) translateY(100px); opacity: 0; }
-  to   { transform: translateX(-50%) translateY(0);    opacity: 1; }
+  from { transform: translateY(100px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
+
+.install-banner.closed { display: none !important; }
 
 .install-content { display: flex; align-items: center; gap: 12px; }
 .install-icon { font-size: 28px; }

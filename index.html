@@ -102,7 +102,7 @@
     </div>
     <div class="install-actions">
       <button class="install-btn" id="installBtn" onclick="handleInstallClick()">安装</button>
-      <button class="install-dismiss" id="installDismiss" onclick="document.getElementById('installBanner').hidden=true">✕</button>
+      <button class="install-dismiss" id="installDismiss" onclick="this.closest('#installBanner').classList.add('closed');sessionStorage.setItem('banner_closed','1')">✕</button>
     </div>
   </div>
 

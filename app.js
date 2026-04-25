@@ -264,18 +264,26 @@ function isInStandaloneMode() {
   return window.matchMedia('(display-mode: standalone)').matches || !!window.navigator.standalone;
 }
 
-if (isIOS() && !isInStandaloneMode()) {
+function showBanner() {
+  if (sessionStorage.getItem('banner_closed') || isInStandaloneMode()) return;
   installBanner.hidden = false;
 }
+
+function closeBanner() {
+  installBanner.classList.add('closed');
+  sessionStorage.setItem('banner_closed', '1');
+}
+
+if (isIOS()) showBanner();
 
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredPrompt = e;
-  installBanner.hidden = false;
+  showBanner();
 });
 
 window.addEventListener('appinstalled', () => {
-  installBanner.hidden = true;
+  closeBanner();
   document.getElementById('installGuide')?.remove();
   showToast('欢迎使用 Gallery App！');
 });
@@ -286,7 +294,7 @@ window.handleInstallClick = async function () {
   if (deferredPrompt) {
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') { showToast('App 已安装！'); installBanner.hidden = true; }
+    if (outcome === 'accepted') { showToast('App 已安装！'); closeBanner(); }
     deferredPrompt = null;
   } else {
     showInstallGuide();
